@@ -9,6 +9,13 @@
             font: 10px sans-serif;
         }
 
+        /* Comparison line */
+        line#limit {
+            stroke: #FED966;
+            stroke-width: 3;
+            stroke-dasharray: 3 6;
+        }
+
         .axis path,
         .axis line {
             fill: none;
@@ -102,19 +109,25 @@
                 .attr("height", function (d) {
                     return height - y(d.value);
                 })
-                .on("mouseover", function () {
-                    console.log(d3.select(this));
+                .on("mouseenter", function (d, i) {
                     d3.select(this).attr({
                         style: "fill: red"
                     })
+
+                    console.log(d3.select(this));
+                    line = svg.append('line')
+                        .attr('id', 'limit')
+                        .attr('x1', 0)
+                        .attr('y1', d3.select(this).attr('y'))
+                        .attr('x2', width)
+                        .attr('y2', d3.select(this).attr('y'))
                 })
                 .on("mouseout", function () {
-                    console.log(d3.select(this));
                     d3.select(this).attr({
                         style: "fill: steelblue"
                     })
+                    svg.selectAll('#limit').remove()
                 });
-
         });
     </script>
 
