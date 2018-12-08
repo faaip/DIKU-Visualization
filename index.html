@@ -1,6 +1,7 @@
 <!-- HTML i den her. Javascript i app.js -->
 <!-- http://bl.ocks.org/d3noob/8952219 -->
-<!DOCTYPE html> <meta charset="utf-8" />
+<!DOCTYPE html>
+<meta charset="utf-8" />
 
 <head>
     <style>
@@ -22,8 +23,12 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script>
-
-        var margin = { top: 20, right: 20, bottom: 70, left: 40 },
+        var margin = {
+                top: 20,
+                right: 20,
+                bottom: 70,
+                left: 40
+            },
             width = 1200 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
 
@@ -58,8 +63,10 @@
                 d.value = d.AVG;
             });
 
-            x.domain(data.map(function (d) { return d.date; }));
-            y.domain([0, d3.max(data, function (d) { return d.value; })]);
+            x.domain(data.map(function (d) {
+                return d.date;
+            }));
+            y.domain([750, 1250]);
 
             svg.append("g")
                 .attr("class", "x axis")
@@ -79,19 +86,36 @@
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("Value ($)");
+                .text("Depth (feet)");
 
             svg.selectAll("bar")
                 .data(data)
                 .enter().append("rect")
                 .style("fill", "steelblue")
-                .attr("x", function (d) { return x(d.date); })
-                .attr("width", x.rangeBand())
-                .attr("y", function (d) { return y(d.value); })
-                .attr("height", function (d) { return height - y(d.value); });
+                .attr("x", function (d) {
+                    return x(d.date);
+                })
+                .attr("width", x.rangeBand() / 1.2) // width
+                .attr("y", function (d) {
+                    return y(d.value);
+                })
+                .attr("height", function (d) {
+                    return height - y(d.value);
+                })
+                .on("mouseover", function () {
+                    console.log(d3.select(this));
+                    d3.select(this).attr({
+                        style: "fill: red"
+                    })
+                })
+                .on("mouseout", function () {
+                    console.log(d3.select(this));
+                    d3.select(this).attr({
+                        style: "fill: steelblue"
+                    })
+                });
 
         });
-
     </script>
 
 </body>
