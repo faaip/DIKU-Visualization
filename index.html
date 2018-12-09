@@ -16,6 +16,13 @@
       stroke-dasharray: 3 6;
     }
 
+    /* minimum line */
+    line#min {
+      stroke: #ff0000;
+      stroke-width: 3;
+      stroke-dasharray: 3 6;
+    }
+
     .axis path,
     .axis line {
       fill: none;
@@ -124,7 +131,24 @@
           return d.date;
         })
       );
-      y.domain([272.8, 374.6]);
+      //   y.domain([272.8, 374.6]);
+      y.domain([0, 425]);
+
+      var createHorizontalLine = function(yPos) {
+        svg
+          .append('g')
+          .attr('transform', 'translate(0, ' + y(yPos) + ')')
+          .append('line')
+          .attr('x2', width)
+          .style('fill', '#ffa500 ')
+          .style('stroke', '#ffa500 ')
+          .style('stroke-width', '5px')
+          .attr('data-legend', function(d) {
+            return 'Reservoir minimum level.';
+          });
+      };
+
+      createHorizontalLine(272.8);
 
       svg
         .append('g')
@@ -156,7 +180,7 @@
         .append('rect')
         .style('fill', 'steelblue')
         .attr('data-legend', function(d) {
-          return 'Avg.';
+          return 'Avg. for year';
         })
         .attr('x', function(d) {
           return x(d.date);
@@ -222,7 +246,7 @@
         .style('fill', 'black')
         .attr('r', 3)
         .attr('data-legend', function(d) {
-          return 'Max.';
+          return 'Max for year.';
         })
         .attr('cx', function(d) {
           return x(d.date) + 7;
