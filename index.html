@@ -26,13 +26,13 @@
 
         .toolTip {
             position: absolute;
+            margin: auto;
             display: none;
-            min-width: 80px;
+            /* min-width: 80px; */
             height: auto;
             background: none repeat scroll 0 0 #ffffff;
             border: 1px solid #6F257F;
-            padding: 14px;
-            text-align: center;
+            padding: 2;
         }
 
         h1 {
@@ -46,6 +46,11 @@
 
 <body>
     <h1 class='p.textHeader'>Water Level in Lake Mead</h1>
+
+    <!-- Update button -->
+    <div id="option">
+        <input name="updateButton" type="button" value="Update" onclick="updateData()" />
+    </div>
 
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
@@ -71,6 +76,8 @@
             .orient("bottom")
             .tickFormat(d3.time.format("%Y"));
 
+        var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
         var yAxis = d3.svg.axis()
             .scale(y)
             .orient("left")
@@ -84,7 +91,6 @@
                 "translate(" + margin.left + "," + margin.top + ")");
 
         d3.csv("water_level.csv", function (error, data) {
-
             data.forEach(function (d) {
                 d.date = parseDate(d.Year);
                 d.value = d.AVG;
@@ -93,7 +99,7 @@
             x.domain(data.map(function (d) {
                 return d.date;
             }));
-            y.domain([750, 1250]);
+            y.domain([800, 1250]);
 
             svg.append("g")
                 .attr("class", "x axis")
@@ -128,6 +134,13 @@
                 })
                 .attr("height", function (d) {
                     return height - y(d.value);
+                })
+                .on("mousemove", function (d) {
+                    tooltip
+                        .style("left", d3.event.pageX - 50 + "px")
+                        .style("top", d3.event.pageY - 70 + "px")
+                        .style("display", "inline-block")
+                        .html((d.value) + " feet");
                 })
                 .on("mouseenter", function (d, i) {
                     d3.select(this)
