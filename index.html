@@ -155,6 +155,9 @@
         .enter()
         .append('rect')
         .style('fill', 'steelblue')
+        .attr('data-legend', function(d) {
+          return 'Avg.';
+        })
         .attr('x', function(d) {
           return x(d.date);
         })
@@ -219,7 +222,7 @@
         .style('fill', 'black')
         .attr('r', 3)
         .attr('data-legend', function(d) {
-          return 'max level';
+          return 'Max.';
         })
         .attr('cx', function(d) {
           return x(d.date) + 7;
