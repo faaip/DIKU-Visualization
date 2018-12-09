@@ -55,8 +55,8 @@
         bottom: 70,
         left: 40
       },
-      width = screen.width - margin.left - margin.right,
-      height = screen.height / 2 - margin.top - margin.bottom;
+      width = window.innerWidth - margin.left - margin.right,
+      height = window.innerHeight / 1.2 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format('%Y').parse; // Parse the date / time
 
@@ -92,9 +92,9 @@
     d3.csv('water_level.csv', function(error, data) {
       data.forEach(function(d) {
         d.date = parseDate(d.YEAR);
-        d.value = d.AVG;
-        d.MAX = d.HIGH;
-        d.MIN = d.LOW;
+        d.value = d.AVG / 3.281;
+        d.MAX = d.HIGH / 3.281;
+        d.MIN = d.LOW / 3.281;
       });
 
       x.domain(
@@ -102,7 +102,7 @@
           return d.date;
         })
       );
-      y.domain([800, 1250]);
+      y.domain([272.8, 374.6]);
 
       svg
         .append('g')
@@ -124,7 +124,7 @@
         .attr('y', 6)
         .attr('dy', '.71em')
         .style('text-anchor', 'end')
-        .text('Average depth (feet)');
+        .text('Average depth (m)');
 
       // Bars
       svg
@@ -143,25 +143,6 @@
         .attr('height', function(d) {
           return height - y(d.value);
         })
-        .on('mousemove', function(d) {
-          tooltip
-            .style('left', d3.event.pageX - 50 + 'px')
-            .style('top', d3.event.pageY - 70 + 'px')
-            .style('display', 'inline-block')
-            .html(
-              'Max: ' +
-                d.MAX +
-                ' ft' +
-                '<br>' +
-                'Avg: ' +
-                d.value +
-                ' ft' +
-                '<br>' +
-                'Min: ' +
-                d.MIN +
-                ' ft'
-            );
-        })
         .on('mouseenter', function(d, i) {
           d3.select(this)
             .transition()
@@ -169,6 +150,24 @@
             .attr({
               style: 'fill: red'
             });
+          // Tooltip
+          tooltip
+            .style('left', d3.event.pageX - 50 + 'px')
+            .style('top', d3.event.pageY - 70 + 'px')
+            .style('display', 'inline-block')
+            .html(
+              'Max: ' +
+                d.MAX.toFixed(2) +
+                ' m' +
+                '<br>' +
+                'Avg: ' +
+                d.value.toFixed(2) +
+                ' m' +
+                '<br>' +
+                'Min: ' +
+                d.MIN.toFixed(2) +
+                ' m'
+            );
 
           // add comparioson line
           line = svg
@@ -179,7 +178,7 @@
             .attr('x2', width)
             .attr('y2', d3.select(this).attr('y'));
         })
-        .on('mouseout', function() {
+        .on('mouseout', function(d, i) {
           d3.select(this)
             .transition()
             .duration(500)
@@ -194,8 +193,9 @@
         .enter()
         .append('circle')
         .style('stroke', 'gray')
+        .style('opacity', 0.7)
         .style('fill', 'black')
-        .attr('r', 5)
+        .attr('r', 3)
         .attr('cx', function(d) {
           return x(d.date) + 7;
         })
