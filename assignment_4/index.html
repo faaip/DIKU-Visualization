@@ -30,7 +30,7 @@
 <body>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
-    var diameter = 960,
+    var diameter = window.innerHeight*.85,
       radius = diameter / 2,
       innerRadius = radius - 120;
 
@@ -49,10 +49,10 @@
     var svg = d3
       .select('body')
       .append('svg')
-      .attr('width', diameter)
-      .attr('height', diameter)
+      .attr('width', window.innerWidth)
+      .attr('height', window.innerHeight)
       .append('g')
-      .attr('transform', 'translate(' + radius + ',' + radius + ')');
+      .attr('transform', 'translate(' + window.innerWidth/2 + ',' + radius + ')');
 
     var tooltip = d3
       .select('body')
