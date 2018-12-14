@@ -67,7 +67,7 @@
     function showTooltip(text) {
       tooltip
         .transition()
-        .duration(200)
+        .duration(300)
         .style('opacity', 0.9)
         .style('left', d3.event.pageX + 'px')
         .style('top', d3.event.pageY - 28 + 'px');
@@ -105,7 +105,7 @@
         .on('mouseover', function(d) {
           d3.select(this)
             .transition()
-            .duration(200)
+            .duration(350)
             .style('stroke', 'red')
             .style('stroke-width', 12);
 
@@ -153,8 +153,6 @@
             .transition()
             .duration(250)
             .style('fill', 'plum');
-
-          console.log(d);
           showTooltip(
             '<b>' + d.parent.data.key + '</b><br/>' + getTitle(d.data.key)
           );
@@ -164,7 +162,6 @@
             .transition()
             .duration(150)
             .style('fill', 'black');
-
           hideToolTip();
         });
     });
