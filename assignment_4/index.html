@@ -25,12 +25,14 @@
   }
 </style>
 
-<head></head>
+<head>
+  <title>Assignment 4</title>
+</head>
 
 <body>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
-    var diameter = window.innerHeight*.85,
+    var diameter = window.innerHeight * 0.85,
       radius = diameter / 2,
       innerRadius = radius - 120;
 
@@ -52,7 +54,10 @@
       .attr('width', window.innerWidth)
       .attr('height', window.innerHeight)
       .append('g')
-      .attr('transform', 'translate(' + window.innerWidth/2 + ',' + radius + ')');
+      .attr(
+        'transform',
+        'translate(' + window.innerWidth / 2 + ',' + radius + ')'
+      );
 
     var tooltip = d3
       .select('body')
@@ -112,8 +117,17 @@
           // Show connection in tooltip
           showTooltip(
             getTitle(d[0].data.key) +
+              ' (' +
+              d[0].data.parent.key +
+              ')' +
               ' + <br />' +
-              getTitle(d[d.length - 1].data.key)
+              getTitle(
+                d[d.length - 1].data.key +
+                  ' (' +
+                  d[d.length - 1].data.parent.key +
+                  ')' +
+                  ' + <br />'
+              )
           );
         })
         .on('mouseout', function(d) {
