@@ -1,0 +1,259 @@
+<!-- HTML i den her. Javascript i app.js -->
+<!-- http://bl.ocks.org/d3noob/8952219 -->
+<!-- https://jsfiddle.net/matehu/w7h81xz2/ -->
+<!DOCTYPE html> <meta charset="utf-8" />
+
+<head>
+  <style>
+    .axis {
+      font: 10px sans-serif;
+    }
+
+    /* Comparison line */
+    line#limit {
+      stroke: #ff0000;
+      stroke-width: 3;
+      stroke-dasharray: 3 6;
+    }
+
+    /* minimum line */
+    line#min {
+      stroke: #ff0000;
+      stroke-width: 3;
+      stroke-dasharray: 3 6;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .toolTip {
+      position: absolute;
+      margin: auto;
+      display: none;
+      /* min-width: 80px; */
+      height: auto;
+      background: none repeat scroll 0 0 #ffffff;
+      border: 1px solid #6f257f;
+      padding: 2;
+    }
+
+    .legend rect {
+      fill: white;
+      stroke: black;
+      opacity: 0.8;
+    }
+
+    h1 {
+      width: 500px;
+      margin: 0 auto;
+      font-family: 'Lucida Console', Monaco, monospace;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="p.textHeader">Water Level in Lake Mead (Average per year)</h1>
+
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="d3.legend.js"></script>
+
+  <script>
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 70,
+        left: 40
+      },
+      width = window.innerWidth - margin.left - margin.right,
+      height = window.innerHeight / 1.2 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format('%Y').parse; // Parse the date / time
+
+    var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.05);
+
+    var y = d3.scale.linear().range([height, 0]);
+
+    var xAxis = d3.svg
+      .axis()
+      .scale(x)
+      .orient('bottom')
+      .tickFormat(d3.time.format('%Y'));
+
+    var tooltip = d3
+      .select('body')
+      .append('div')
+      .attr('class', 'toolTip');
+
+    var yAxis = d3.svg
+      .axis()
+      .scale(y)
+      .orient('left')
+      .ticks(10);
+
+    var svg = d3
+      .select('body')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    legend = svg
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', 'translate(50,20)')
+      .style('font-size', '10px')
+      .call(d3.legend);
+
+    setTimeout(function() {
+      legend
+        .style('font-size', '12')
+        .attr('class', 'legend')
+        .attr('data-style-padding', 5)
+        .call(d3.legend);
+    }, 1000);
+
+    d3.csv('water_level.csv', function(error, data) {
+      data.forEach(function(d) {
+        d.date = parseDate(d.YEAR);
+        d.value = d.AVG / 3.281;
+        d.MAX = d.HIGH / 3.281;
+        d.MIN = d.LOW / 3.281;
+      });
+
+      x.domain(
+        data.map(function(d) {
+          return d.date;
+        })
+      );
+      //   y.domain([272.8, 374.6]);
+      y.domain([0, 425]);
+
+      var createHorizontalLine = function(yPos) {
+        svg
+          .append('g')
+          .attr('transform', 'translate(0, ' + y(yPos) + ')')
+          .append('line')
+          .attr('x2', width)
+          .style('fill', '#ffa500 ')
+          .style('stroke', '#ffa500 ')
+          .style('stroke-width', '5px')
+          .attr('data-legend', function(d) {
+            return 'Reservoir minimum level.';
+          });
+      };
+
+      createHorizontalLine(272.8);
+
+      svg
+        .append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis)
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('dx', '-.8em')
+        .attr('dy', '-.55em')
+        .attr('transform', 'rotate(-90)');
+
+      svg
+        .append('g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'end')
+        .text('Average depth (m)');
+
+      // Bars
+      svg
+        .selectAll('bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .style('fill', 'steelblue')
+        .attr('data-legend', function(d) {
+          return 'Avg. for year';
+        })
+        .attr('x', function(d) {
+          return x(d.date);
+        })
+        .attr('width', x.rangeBand() / 1.4) // width
+        .attr('y', function(d) {
+          return y(d.value);
+        })
+        .attr('height', function(d) {
+          return height - y(d.value);
+        })
+        .on('mouseenter', function(d, i) {
+          d3.select(this)
+            .transition()
+            .duration(500)
+            .attr({
+              style: 'fill: red'
+            });
+          // Tooltip
+          tooltip
+            .style('left', d3.event.pageX - 50 + 'px')
+            .style('top', d3.event.pageY - 70 + 'px')
+            .style('display', 'inline-block')
+            .html(
+              'Max: ' +
+                d.MAX.toFixed(2) +
+                ' m' +
+                '<br>' +
+                'Avg: ' +
+                d.value.toFixed(2) +
+                ' m' +
+                '<br>' +
+                'Min: ' +
+                d.MIN.toFixed(2) +
+                ' m'
+            );
+
+          // add comparioson line
+          line = svg
+            .append('line')
+            .attr('id', 'limit')
+            .attr('x1', 0)
+            .attr('y1', d3.select(this).attr('y'))
+            .attr('x2', width)
+            .attr('y2', d3.select(this).attr('y'));
+        })
+        .on('mouseout', function(d, i) {
+          d3.select(this)
+            .transition()
+            .duration(500)
+            .attr({
+              style: 'fill: steelblue'
+            });
+          svg.selectAll('#limit').remove();
+        });
+      svg
+        .selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .style('stroke', 'gray')
+        .style('opacity', 0.7)
+        .style('fill', 'black')
+        .attr('r', 3)
+        .attr('data-legend', function(d) {
+          return 'Max for year.';
+        })
+        .attr('cx', function(d) {
+          return x(d.date) + 7;
+        })
+        .attr('cy', function(d) {
+          return y(d.MAX);
+        });
+    });
+  </script>
+</body>

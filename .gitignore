@@ -1,11 +1,3 @@
-
-# Created by https://www.gitignore.io/api/web,macos,java-web
-# Edit at https://www.gitignore.io/?templates=web,macos,java-web
-
-### Java-Web ###
-## ignoring target file
-target/
-
 ### macOS ###
 # General
 .DS_Store
@@ -33,18 +25,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
-### Web ###
-*.asp
-*.cer
-*.csr
-*.css
-*.htm
-*.html
-*.js
-*.jsp
-*.php
-*.rss
-*.xhtml
-
-# End of https://www.gitignore.io/api/web,macos,java-web
