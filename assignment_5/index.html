@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Helvetica Neue', helvetica, Arial, Sans-serif;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      h1 {
+          font-size: 20px;
+          line-height: 30px;
+      }
+
+      h2 {
+          font-size:14px;
+          line-height: 20px;
+          margin-bottom: 10px;
+      }
+
+      a {
+          text-decoration: none;
+          color: #2dc4b2;
+      }
+
+      #console {
+          position: absolute;
+          width: 240px;
+          margin: 10px;
+          padding: 10px 20px;
+          background-color: white;
+      }
+
+
+    </style>
+</head>
+<body>
+  <div id='map'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGplcm5hZXMiLCJhIjoiY2pxbWRsMzEzMjFjaTQzcXN0MDc0Y2xrZiJ9.-LM9uIeDM1DqFF75g9KKwQ';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/basic-v9',
+      center: [12.568337, 55.676098],
+      zoom: 11
+    });
+
+    map.on('load', function() {
+    
+     map.addSource('placeringer', {
+         type:'geojson',
+         data:'./placeringsoversigt.geojson'
+      });
+      map.addLayer({
+          id: 'place-heat',
+          type: 'heatmap',
+          source: 'placeringer',
+          maxzoom: 15,
+          paint: {
+              'heatmap-radius': {
+                  stops: [
+                         [11, 3],
+                         [15, 5]
+                  ]
+              },
+              'heatmap-intensity': [ 
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 1,
+                9, 3
+                ],
+
+            // assign color values be applied to points depending on their density
+              'heatmap-color': [
+              'interpolate',
+              ['linear'],
+              ['heatmap-density'],
+                0, "rgba(33,102,172,0)",
+                0.2, "rgb(103,169,207)",
+                0.4, "rgb(209,229,240)",
+                0.6, "rgb(253,219,199)",
+                0.8, "rgb(239,138,98)",
+                1, "rgb(178,24,43)"
+              ]
+          }
+      })
+    
+    });
+
+
+  </script>
+</body>
+</html>
