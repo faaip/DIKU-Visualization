@@ -60,7 +60,7 @@ geojson = {
                                                 round(d[0]["latitudeE7"] / 1e7,5)],
                                 },
                                 
-                                } for d in zip(data['locations'][0:500],diff[0:500])] 
+                                } for d in zip(data['locations'],diff)] 
     }
     
 
