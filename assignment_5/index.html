@@ -12,8 +12,9 @@
 </head>
 
 <body>
-    <div id="sideControls" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!-- Side controls -->
+    <div id="leftControls" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
         <a>Side Controls</a>
         <!-- Content of side controls -->
         <p style="color:white;">Custom range slider:</p>
@@ -26,8 +27,16 @@
             }
         </script>
     </div>
+    <!-- Side Visualization -->
+    <div id="rightControls" class="sidenav sidenavRight">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeRightControls()">&times;</a>
+        <a>Side Controls</a>
+        <!-- Content of side controls -->
+        <p style="color:white;">RIGHT:</p>
+    </div>
     <div id="main">
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()" id="sideButton">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer" onclick="openLeftControls()" id="sideButton">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer;float:right;position:absolute" onclick="openRightControls()">&#9776;</span>
     </div>
     <div id="map"></div>
     <script>
