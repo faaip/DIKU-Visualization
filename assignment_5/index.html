@@ -1,86 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <title>Visualization - Final Group Project</title>
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
     <script src="js/side_controls.js"></script>
-    <link
-      href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css"
-      rel="stylesheet"
-    />
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="mySidenav" class="sidenav">
-      <a href="javascript:void(0)" class="closebtn"  onclick="closeNav()">&times;</a>
-      <a>Side menu</a>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a>Side menu</a>
     </div>
     <div id="main">
-      <span style="font-size:30px;cursor:pointer" onclick="openNav()"id="sideButton"
-        >&#9776;</span
-      >
+        <span style="font-size:30px;cursor:pointer" onclick="openNav()" id="sideButton">&#9776;</span>
     </div>
     <div id="map"></div>
     <script>
-      mapboxgl.accessToken =
-        'pk.eyJ1IjoiZGplcm5hZXMiLCJhIjoiY2pxbWRsMzEzMjFjaTQzcXN0MDc0Y2xrZiJ9.-LM9uIeDM1DqFF75g9KKwQ';
-      var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/basic-v9',
-        center: [12.568337, 55.676098],
-        zoom: 11
-      });
-
-      map.on('load', function() {
-        map.addSource('placeringer', {
-          type: 'geojson',
-          data: './placeringsoversigt.geojson'
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoiZGplcm5hZXMiLCJhIjoiY2pxbWRsMzEzMjFjaTQzcXN0MDc0Y2xrZiJ9.-LM9uIeDM1DqFF75g9KKwQ';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/basic-v9',
+            center: [12.568337, 55.676098],
+            zoom: 11
         });
-        map.addLayer({
-          id: 'place-heat',
-          type: 'heatmap',
-          source: 'placeringer',
-          maxzoom: 15,
-          paint: {
-            'heatmap-radius': {
-              stops: [[11, 3], [15, 5]]
-            },
-            'heatmap-intensity': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              0,
-              1,
-              9,
-              3
-            ],
 
-            // assign color values be applied to points depending on their density
-            'heatmap-color': [
-              'interpolate',
-              ['linear'],
-              ['heatmap-density'],
-              0,
-              'rgba(33,102,172,0)',
-              0.2,
-              'rgb(103,169,207)',
-              0.4,
-              'rgb(209,229,240)',
-              0.6,
-              'rgb(253,219,199)',
-              0.8,
-              'rgb(239,138,98)',
-              1,
-              'rgb(178,24,43)'
-            ]
-          }
+        map.on('load', function () {
+            map.addSource('placeringer', {
+                type: 'geojson',
+                data: './placeringsoversigt.geojson'
+            });
+            map.addLayer({
+                id: 'place-heat',
+                type: 'heatmap',
+                source: 'placeringer',
+                maxzoom: 15,
+                paint: {
+                    'heatmap-radius': {
+                        stops: [
+                            [11, 3],
+                            [15, 5]
+                        ]
+                    },
+                    'heatmap-intensity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        0,
+                        1,
+                        9,
+                        3
+                    ],
+
+                    // assign color values be applied to points depending on their density
+                    'heatmap-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['heatmap-density'],
+                        0,
+                        'rgba(33,102,172,0)',
+                        0.2,
+                        'rgb(103,169,207)',
+                        0.4,
+                        'rgb(209,229,240)',
+                        0.6,
+                        'rgb(253,219,199)',
+                        0.8,
+                        'rgb(239,138,98)',
+                        1,
+                        'rgb(178,24,43)'
+                    ]
+                }
+            });
         });
-      });
     </script>
-  </body>
+</body>
+
 </html>
