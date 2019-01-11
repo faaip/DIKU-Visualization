@@ -63,12 +63,22 @@ geojson = {
                                 } for d in zip(data['locations'][0:500],diff[0:500])] 
     }
     
-print(geojson['features'][0])
 
-# string = json.dumps(geojson, separators=(',', ':'))
+# add a utility that allowes you to dumb the geojson file where you want
+
+string = json.dumps(geojson, separators=(',', ':')) # Convert the geojson to a string for export purposes
+
+# Path to where you want to export the file
+export_folder = 'C:/Users/user/Desktop/IT and Cognition/Visualisation/finalProject/'
+export_path = Path(export_folder)
+export_file_name = 'placeringsoversigt.geojson'
+export_path_name = export_path / export_file_name
+
+
+#Export the file as geojson to specified location
     
-#with open (r'C:\Users\gusta\Desktop\mapboxProject\placeringsoversigt.geojson', 'w') as text_file:
-    #print(string, file=text_file)
+with open (export_path_name, 'w') as text_file:
+    print(string, file=text_file)
 
 
 
