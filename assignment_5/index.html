@@ -2,56 +2,29 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Visualization - Final Group Project</title>
     <meta
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
+    <script src="js/side_controls.js"></script>
     <link
       href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css"
       rel="stylesheet"
     />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Helvetica Neue', helvetica, Arial, Sans-serif;
-      }
-
-      #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-      }
-
-      h1 {
-        font-size: 20px;
-        line-height: 30px;
-      }
-
-      h2 {
-        font-size: 14px;
-        line-height: 20px;
-        margin-bottom: 10px;
-      }
-
-      a {
-        text-decoration: none;
-        color: #2dc4b2;
-      }
-
-      #console {
-        position: absolute;
-        width: 240px;
-        margin: 10px;
-        padding: 10px 20px;
-        background-color: white;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
   </head>
   <body>
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn"  onclick="closeNav()">&times;</a>
+      <a>Side menu</a>
+    </div>
+    <div id="main">
+      <span style="font-size:30px;cursor:pointer" onclick="openNav()"id="sideButton"
+        >&#9776;</span
+      >
+    </div>
     <div id="map"></div>
     <script>
       mapboxgl.accessToken =
