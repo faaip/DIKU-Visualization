@@ -121,7 +121,16 @@
             });
             map.addLayer(heatmap);
             map.addLayer(points);
+
         });
+
+        map.on('click', function () {
+            //TESTING
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            });
+            getCounts(query);
+        })
 
         // Add drawing stuff for selecting
         var draw = new MapboxDraw({
@@ -136,6 +145,7 @@
         map.on('draw.delete', updateArea);
         map.on('draw.update', updateArea);
 
+        // Test
         function updateArea(e) {
             console.log(e);
             var query = map.queryRenderedFeatures({
@@ -153,7 +163,7 @@
             var features = map.queryRenderedFeatures([southWestPointPixel, northEastPointPixel], {
                 layers: ['place-point']
             });
-            var filter = features.reduce(function (memo, feature) {
+            var filtered = features.reduce(function (memo, feature) {
                 if (!(undefined === turf.intersect(feature, userPolygon))) {
                     // only add the property, if the feature intersects with the polygon drawn by the user
                     // memo.push(feature.properties.FIPS);
@@ -163,6 +173,16 @@
             }, []);
             // map.setFilter("place-point", filter);
             // console.log(filter);
+            getCounts(filtered);
+        }
+
+        function getCounts(data) {
+            var counts = {};
+            for (var i = 0; i < data.length; i++) {
+                var activity = data[i].properties.activity;
+                counts[activity] = 1 + (counts[activity] || 0);
+            }
+            console.log(counts);
         }
     </script>
 </body>
