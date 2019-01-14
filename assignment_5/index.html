@@ -116,13 +116,10 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                data: './placeringsoversigt.geojson'
+                data: 'data/placeringsoversigt_small.geojson'
             });
             map.addLayer(heatmap);
             map.addLayer(points);
-
-            // Clone and create new layer
-
         });
 
         // Add drawing stuff for selecting
@@ -143,7 +140,6 @@
             var query = map.queryRenderedFeatures({
                 layers: ['place-point']
             })
-            console.log(query);
 
             var userPolygon = e.features[0];
             // generate bounding box from polygon the user drew
@@ -159,12 +155,13 @@
             var filter = features.reduce(function (memo, feature) {
                 if (!(undefined === turf.intersect(feature, userPolygon))) {
                     // only add the property, if the feature intersects with the polygon drawn by the user
-                    memo.push(feature.properties.FIPS);
+                    // memo.push(feature.properties.FIPS);
+                    memo.push(feature);
                 }
                 return memo;
-            }, ['in', 'FIPS']);
-            map.setFilter("place-point", filter);
-
+            }, []);
+            // map.setFilter("place-point", filter);
+            // console.log(filter);
         }
     </script>
 </body>
