@@ -4,6 +4,13 @@
           font-family: 'Helvetica Neue', helvetica, Arial, Sans-serif;
       }
 
+      #map {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+      }
+
       .sidenav {
           height: 100%;
           width: 0;
@@ -46,6 +53,7 @@
           .sidenav {
               padding-top: 15px;
           }
+
           .sidenav a {
               font-size: 18px;
           }

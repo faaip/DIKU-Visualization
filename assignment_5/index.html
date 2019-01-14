@@ -5,8 +5,11 @@
     <meta charset="utf-8" />
     <title>Visualization - Final Group Project</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+        type='text/css' />
     <script src="js/side_controls.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -108,10 +111,13 @@
             }
         });
         map.addControl(draw);
-
         map.on('draw.create', updateArea);
         map.on('draw.delete', updateArea);
         map.on('draw.update', updateArea);
+
+        function updateArea(e) {
+            console.log(e);
+        }
     </script>
 </body>
 
