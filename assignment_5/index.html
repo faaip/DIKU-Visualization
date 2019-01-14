@@ -53,53 +53,76 @@
             zoom: 11
         });
 
+        var heatmap = {
+            id: 'place-heat',
+            type: 'heatmap',
+            source: 'placeringer',
+            maxzoom: 15,
+            paint: {
+                "heatmap-opacity": 0.65,
+                'heatmap-radius': {
+                    stops: [
+                        [11, 3],
+                        [15, 5]
+                    ]
+                },
+                'heatmap-intensity': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    1,
+                    9,
+                    3
+                ],
+
+                // assign color values be applied to points depending on their density
+                'heatmap-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['heatmap-density'],
+                    0,
+                    'rgba(33,102,172,0)',
+                    0.2,
+                    'rgb(103,169,207)',
+                    0.4,
+                    'rgb(209,229,240)',
+                    0.6,
+                    'rgb(253,219,199)',
+                    0.8,
+                    'rgb(239,138,98)',
+                    1,
+                    'rgb(178,24,43)'
+                ]
+            }
+        }
+
+        var points = {
+            id: 'place-point',
+            type: 'circle',
+            source: 'placeringer',
+            maxzoom: 15,
+            'paint': {
+                'circle-radius': {
+                    'base': 1.75,
+                    'stops': [
+                        [12, 2],
+                        [22, 180]
+                    ]
+                }
+            }
+        }
+
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
                 data: './placeringsoversigt.geojson'
             });
-            map.addLayer({
-                id: 'place-heat',
-                type: 'heatmap',
-                source: 'placeringer',
-                maxzoom: 15,
-                paint: {
-                    'heatmap-radius': {
-                        stops: [
-                            [11, 3],
-                            [15, 5]
-                        ]
-                    },
-                    'heatmap-intensity': [
-                        'interpolate',
-                        ['linear'],
-                        ['zoom'],
-                        0,
-                        1,
-                        9,
-                        3
-                    ],
+            map.addLayer(heatmap);
+            map.addLayer(points);
 
-                    // assign color values be applied to points depending on their density
-                    'heatmap-color': [
-                        'interpolate',
-                        ['linear'],
-                        ['heatmap-density'],
-                        0,
-                        'rgba(33,102,172,0)',
-                        0.2,
-                        'rgb(103,169,207)',
-                        0.4,
-                        'rgb(209,229,240)',
-                        0.6,
-                        'rgb(253,219,199)',
-                        0.8,
-                        'rgb(239,138,98)',
-                        1,
-                        'rgb(178,24,43)'
-                    ]
-                }
-            });
+            // Clone and create new layer
+
         });
 
         // Add drawing stuff for selecting
@@ -117,6 +140,31 @@
 
         function updateArea(e) {
             console.log(e);
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            })
+            console.log(query);
+
+            var userPolygon = e.features[0];
+            // generate bounding box from polygon the user drew
+            var polygonBoundingBox = turf.bbox(userPolygon);
+
+            var southWest = [polygonBoundingBox[0], polygonBoundingBox[1]];
+            var northEast = [polygonBoundingBox[2], polygonBoundingBox[3]];
+            var northEastPointPixel = map.project(northEast);
+            var southWestPointPixel = map.project(southWest);
+            var features = map.queryRenderedFeatures([southWestPointPixel, northEastPointPixel], {
+                layers: ['place-point']
+            });
+            var filter = features.reduce(function (memo, feature) {
+                if (!(undefined === turf.intersect(feature, userPolygon))) {
+                    // only add the property, if the feature intersects with the polygon drawn by the user
+                    memo.push(feature.properties.FIPS);
+                }
+                return memo;
+            }, ['in', 'FIPS']);
+            map.setFilter("place-point", filter);
+
         }
     </script>
 </body>
