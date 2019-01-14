@@ -6,6 +6,7 @@
     <title>Visualization - Final Group Project</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
     <script src="js/side_controls.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -29,14 +30,14 @@
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeRightControls()">&times;</a>
+        <a style="left:0" href="javascript:void(0)" class="closebtn" onclick="closeRightControls()">&times;</a>
         <a>Side Controls</a>
         <!-- Content of side controls -->
         <p style="color:white;">RIGHT:</p>
     </div>
     <div id="main">
-        <span style="font-size:30px;cursor:pointer;" onclick="openLeftControls()" id="leftSideButton">&#9776;</span>
-        <span style="font-size:30px;cursor:pointer;position:fixed;right:6px" onclick="openRightControls()">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer;position:fixed;top:50%" onclick="openLeftControls()" id="leftSideButton">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer;position:fixed;right:6px;top:50%" onclick="openRightControls()" id="rightSideButton">&#9776;</span>
     </div>
     <div id="map"></div>
     <script>
@@ -97,6 +98,20 @@
                 }
             });
         });
+
+        // Add drawing stuff for selecting
+        var draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+                polygon: true,
+                trash: true
+            }
+        });
+        map.addControl(draw);
+
+        map.on('draw.create', updateArea);
+        map.on('draw.delete', updateArea);
+        map.on('draw.update', updateArea);
     </script>
 </body>
 

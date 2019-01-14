@@ -5,6 +5,7 @@ function openLeftControls() {
 
 function openRightControls() {
     document.getElementById("rightControls").style.width = "250px";
+    document.getElementById("rightSideButton").style.opacity = 0;
 }
 
 function closeLeftControls() {
@@ -14,4 +15,5 @@ function closeLeftControls() {
 
 function closeRightControls() {
     document.getElementById("rightControls").style.width = "0";
+    document.getElementById("rightSideButton").style.opacity = 1;
 }
