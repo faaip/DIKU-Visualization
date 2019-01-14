@@ -5,14 +5,20 @@
     <meta charset="utf-8" />
     <title>Visualization - Final Group Project</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    type='text/css' />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- libraries -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
-        type='text/css' />
+        <!-- separate files -->
     <script src="js/side_controls.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="js/piechart.js"></script>
+
 </head>
 
 <body>
@@ -37,6 +43,8 @@
         <a>Side Controls</a>
         <!-- Content of side controls -->
         <p style="color:white;">RIGHT:</p>
+        <div id="piechart"></div>
+
     </div>
     <div id="main">
         <span style="font-size:30px;cursor:pointer;position:fixed;top:50%" onclick="openLeftControls()" id="leftSideButton">&#9776;</span>
@@ -121,16 +129,18 @@
             });
             map.addLayer(heatmap);
             map.addLayer(points);
-
         });
 
-        map.on('click', function () {
-            //TESTING
-            var query = map.queryRenderedFeatures({
-                layers: ['place-point']
-            });
-            getCounts(query);
-        })
+        // map.on('click', function () {
+        //     openRightControls();
+        //     //TESTING
+        //     var query = map.queryRenderedFeatures({
+        //         layers: ['place-point']
+        //     });
+        //     // var data = [10, 20, 100];
+        //     var data = getCounts(query);
+        //     createPieChart(data);
+        // })
 
         // Add drawing stuff for selecting
         var draw = new MapboxDraw({
@@ -145,7 +155,6 @@
         map.on('draw.delete', updateArea);
         map.on('draw.update', updateArea);
 
-        // Test
         function updateArea(e) {
             console.log(e);
             var query = map.queryRenderedFeatures({
@@ -173,16 +182,26 @@
             }, []);
             // map.setFilter("place-point", filter);
             // console.log(filter);
-            getCounts(filtered);
+            var data = getCounts(filtered);
+            createPieChart(data);
         }
 
         function getCounts(data) {
             var counts = {};
             for (var i = 0; i < data.length; i++) {
                 var activity = data[i].properties.activity;
-                counts[activity] = 1 + (counts[activity] || 0);
+                var val = 1 + (counts[activity] || 0);
+                counts[activity] = val;
             }
-            console.log(counts);
+
+            var object = []
+            for (var property in counts) {
+                object.push({
+                    name: property,
+                    value: counts[property]
+                })
+            }
+            return object;
         }
     </script>
 </body>

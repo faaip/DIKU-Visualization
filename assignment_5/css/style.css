@@ -130,3 +130,30 @@
           background: #4CAF50;
           cursor: pointer;
       }
+
+      .pie {
+          margin: 20px;
+      }
+
+      svg {
+          float: left;
+      }
+
+      .legend {
+          float: left;
+          font-family: "Verdana";
+          font-size: .7em;
+      }
+
+      .pie text {
+          font-family: "Verdana";
+          fill: #000;
+      }
+
+      .pie .name-text {
+          font-size: .8em;
+      }
+
+      .pie .value-text {
+          font-size: 3em;
+      }
