@@ -9,6 +9,10 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <!-- libraries -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
@@ -24,35 +28,42 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
-
-        <div id="slider-range"></div>
+        <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
 
         <script>
             $(function () {
-        $("#slider-range").slider({
-            range: true,
-            min: 0,
-            max: 500,
-            values: [75, 300],
-            slide: function (event, ui) {
-                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-            }
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left',
+                startDate: "03/28/2016"
+            }, function (start, end, label) {
+                var unixStart = parseInt(new Date(start.format('YYYY-MM-DD')).getTime() / 1000)
+                var unixEnd = parseInt(new Date(end.format('YYYY-MM-DD')).getTime() / 1000)
+                var unixStart = ['>=', ['number', ['get', 'timestampS']], unixStart]
+                var unixEnd = ['<=', ['number', ['get', 'timestampS']], unixEnd]
+                map.setFilter('place-heat', ['all', unixStart, unixEnd]);
+                map.setFilter('place-point', ['all', unixStart, unixEnd]);
+                var query = map.queryRenderedFeatures({
+                    layers: ['place-point']
+                });
+                var data = getCounts(query);
+                createPieChart(data);
+                openRightControls();
         });
-        $("#amount").val("$" + $("#slider-range").slider("values", 0) +
-            " - $" + $("#slider-range").slider("values", 1));
+
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+                var unixStart = ['>=', ['number', ['get', 'timestampS']], 0]
+                var unixEnd = ['<=', ['number', ['get', 'timestampS' ]], 2147483647]
+                map.setFilter('place-heat', ['all', unixStart, unixEnd]);
+                map.setFilter('place-point', ['all', unixStart, unixEnd]);
+                var query = map.queryRenderedFeatures({
+                    layers: ['place-point']
+                });
+                var data = getCounts(query);
+                createPieChart(data);
+                openRightControls();
+        });
     });
 </script>
-
-
-
-
-
-
-
-
-
-
-
         <a>Visible activites:</a>
         🚗 In car:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
@@ -74,7 +85,6 @@
         <br>
         ❓ Unknown:
         <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
-
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
@@ -141,7 +151,7 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_medium.geojson?dl=0'
+                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_small.geojson?dl=0'
                 // data: 'data/placeringsoversigt_small.geojson'
             });
             map.addLayer(heatmap);
