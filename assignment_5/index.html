@@ -25,7 +25,6 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
-        <a>Side Controls</a>
         <!-- Content of side controls -->
         <!-- <p style="color:white;">Custom range slider:</p>
         <input type="range" min="1" max="100" value="50" class="slider" id="slider_1">
@@ -37,26 +36,27 @@
             }
             openLeftControls();
         </script> -->
-        <p style="color:white;">Visible activities:</p>
-        In vehicle:
+        <!-- <p style="color:white;">Visible activities:</p> -->
+        <a>Visible activites:</a>
+        🚗 In vehicle:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
         <br>
-        On foot:
+        🦶 On foot:
         <input style="color:white;" type="checkbox" id="onFootCheck" onclick="checkBoxes()" checked>
         <br>
-        Not available:
+        🚫 Not available:
         <input style="color:white;" type="checkbox" id="naCheck" onclick="checkBoxes()" checked>
         <br>
-        On bike:
+        🚴 On bike:
         <input style="color:white;" type="checkbox" id="onBicycleCheck" onclick="checkBoxes()" checked>
         <br>
-        Still:
+        😑 Still:
         <input style="color:white;" type="checkbox" id="stillCheck" onclick="checkBoxes()" checked>
         <br>
-        Tilting:
+        🤣 Tilting:
         <input style="color:white;" type="checkbox" id="tiltingCheck" onclick="checkBoxes()" checked>
         <br>
-        Unknown:
+        ❓ Unknown:
         <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
 
     </div>
@@ -233,11 +233,11 @@
             var boxes = [
                 ["vehicleCheck", "IN_VEHICLE"],
                 ["onFootCheck", "ON_FOOT"],
-                ["naCheck","NA"],
-                ["onBicycleCheck","ON_BICYCLE"],
-                ["stillCheck","STILL"],
-                ["tiltingCheck","TILTING"],
-                ["unknownCheck","UNKNOWN"],
+                ["naCheck", "NA"],
+                ["onBicycleCheck", "ON_BICYCLE"],
+                ["stillCheck", "STILL"],
+                ["tiltingCheck", "TILTING"],
+                ["unknownCheck", "UNKNOWN"],
             ];
 
             var filteredActivities = []
@@ -246,7 +246,7 @@
                 var checkBox = document.getElementById(element[0]);
                 if (checkBox.checked == true) {
                     filteredActivities.push(element[1])
-                } 
+                }
             });
             map.setFilter('place-heat', buildFilter(filteredActivities))
             map.setFilter('place-point', buildFilter(filteredActivities))
@@ -264,4 +264,5 @@
         }
     </script>
 </body>
+
 </html>
