@@ -86,6 +86,9 @@
         <br>
         ❓ Unknown:
         <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
+        <br>
+        ❓ Exiting Vehicle:
+        <input style="color:white;" type="checkbox" id="exitingVehicleCheck" onclick="checkBoxes()" checked>
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
@@ -166,10 +169,6 @@
             openLeftControls();
             map.on('render', loadPieChart);
         });
-
-        function updateHeatMap() {
-
-        }
 
         function loadPieChart(e) {
             if (e.target && e.target.loaded()) {
@@ -253,6 +252,7 @@
                 ["stillCheck", "STILL"],
                 ["tiltingCheck", "TILTING"],
                 ["unknownCheck", "UNKNOWN"],
+                ["exitingVehicleCheck", "EXITING_VEHICLE"],
             ];
 
             var filteredActivities = []
@@ -264,7 +264,6 @@
                 }
             });
 
-            console.log(filteredActivities);
             map.setFilter('place-heat', buildFilter(filteredActivities))
             map.setFilter('place-point', buildFilter(filteredActivities))
 
@@ -301,7 +300,8 @@
                 'ON_BICYCLE': 'On bike 🚴',
                 'STILL': 'Still 😑',
                 'TILTING': 'Tilting 🤣',
-                'UNKNOWN': 'Unknown ❓'
+                'UNKNOWN': 'Unknown ❓',
+                'EXITING_VEHICLE': 'Exiting Vehicle ❓'
             }
             return activities[activity];
         }
