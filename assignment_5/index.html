@@ -18,8 +18,6 @@
         <!-- separate files -->
     <script src="js/side_controls.js"></script>
     <script src="js/piechart.js"></script>
-    <script src="js/d3.legend.js"></script>
-
 
 </head>
 
@@ -261,10 +259,7 @@
             closeOnClick: false
         });
 
-        map.on('mouseenter', 'place-point', function (e) {
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
-
+        function getActivityString(activity) {
             let activities = {
                 'IN_VEHICLE': 'In car 🚗',
                 'ON_FOOT': 'On foot 🦶',
@@ -275,8 +270,16 @@
                 'UNKNOWN': 'Unknown ❓'
             }
 
+            return activities[activity];
+        }
+
+        map.on('mouseenter', 'place-point', function (e) {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
             var coordinates = e.features[0].geometry.coordinates.slice();
-            var description = e.features[0].properties.date + "<br>" + activities[e.features[0].properties.activity];
+            var description = e.features[0].properties.date + "<br>" + getActivityString(e.features[0].properties
+                .activity);
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
