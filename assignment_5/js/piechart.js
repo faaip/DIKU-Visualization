@@ -23,7 +23,6 @@ function createPieChart(data) {
     var total = 0;
 
     data.forEach(element => {
-        console.log(element)
         total += element.value;
     });
 
