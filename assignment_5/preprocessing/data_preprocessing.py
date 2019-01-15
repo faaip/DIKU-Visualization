@@ -14,7 +14,7 @@ from pathlib import Path
 
 # get the file path
 
-data_path = 'C:/Users/user/Desktop/IT and Cognition/Visualisation/finalProject/' #Write the data path with '/' and it will be reformulated to correct operating system
+data_path = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/' #Write the data path with '/' and it will be reformulated to correct operating system
 data_folder = Path(data_path)
 data_name = 'Placeringshistorik.json'
 file_to_open = data_folder / data_name
@@ -116,8 +116,8 @@ geojson = {
                         "year": d[3],
                         "month": d[4]}, 
                                 "geometry":{"type":"Point",
-                                "coordinates": [round(d[0]["longitudeE7"] / 1e7,5), 
-                                                round(d[0]["latitudeE7"] / 1e7,5)],
+                                "coordinates": [d[0]["longitudeE7"] / 1e7, 
+                                                d[0]["latitudeE7"] / 1e7],
                                 },
                                 
                                 } for d in zip_object] #Number of points is specified earlier
@@ -125,6 +125,8 @@ geojson = {
     
 
 # add a utility that allowes you to dumb the geojson file where you want
+
+print(data['locations'][0]['longitudeE7'] / 1e7)
 
 string = json.dumps(geojson, separators=(',', ':')) # Convert the geojson to a string for export purposes
 
@@ -136,8 +138,8 @@ export_path_name = export_path / export_file_name
 
 #Export the file as geojson to specified location
     
-with open (export_path_name, 'w') as text_file:
-    print(string, file=text_file)
+# with open (export_path_name, 'w') as text_file:
+#     print(string, file=text_file)
 
 
 
