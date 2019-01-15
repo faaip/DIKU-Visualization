@@ -17,6 +17,8 @@
           position: fixed;
           z-index: 1;
           top: 0;
+          fill: white;
+          color: white;
           background-color: #111;
           opacity: .8;
           overflow-x: hidden;

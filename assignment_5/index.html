@@ -35,7 +35,16 @@
                 slider.innerHTML = this.value;
                 console.log(this.value);
             }
+            openLeftControls();
         </script>
+        <p style="color:white;">Visible activities:</p>
+        In vehicle:
+        <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
+        <br>
+        On foot:
+        <input style="color:white;" type="checkbox" id="onFootCheck" onclick="checkBoxes()" checked>
+        <br>
+
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
@@ -155,7 +164,6 @@
         map.on('draw.update', updateArea);
 
         function updateArea(e) {
-            console.log(e);
             var query = map.queryRenderedFeatures({
                 layers: ['place-point']
             })
@@ -203,6 +211,25 @@
             return object;
         }
     </script>
+
+    <script>
+        function checkBoxes() {
+            var boxes = ["vehicleCheck", "onFootCheck"];
+
+            boxes.forEach(function (element) {
+                var checkBox = document.getElementById(element);
+                if (checkBox.checked == true) {
+                    // text.style.display = "block";
+                    console.log(element,"checked")
+                } else {
+                    // text.style.display = "none";
+                }
+            });
+
+        }
+    </script>
+
+
 </body>
 
 </html>
