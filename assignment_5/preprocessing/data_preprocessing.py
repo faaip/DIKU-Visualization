@@ -26,8 +26,8 @@ with open(file_to_open, 'r') as read_file:
 
 # Decide how many points should be used (Default all points)
 
-#number_of_points = len(data['locations'])
-number_of_points = 1000
+number_of_points = len(data['locations'])
+#number_of_points = 1000
 
 # Get all activities as a list. If no activity is present give it a NA value
 
@@ -39,34 +39,18 @@ for i in range(len(data['locations'])):
     else:
         activities.append('NA')
 
-# Define a function that takes a timestamp in Ms and returns year/month
+# Define a function that takes a timestamp in Ms and returns a date in iso 8601 format
+def date_maker(time_stamp):
 
-def year_maker(time_stamp, date_type='Year'):
+    timestamp = round ( int( time_stamp) / 1000 )
 
-    if date_type == 'Year':
-        timestampS = round(int(time_stamp) / 1000)
-        date = datetime.fromtimestamp(timestampS)
-        date_value = date.year
+    date = datetime.fromtimestamp(timestamp).isoformat() 
 
-    elif date_type == 'Month':
-        timestampS = round(int(time_stamp) / 1000)
-        date = datetime.fromtimestamp(timestampS)
-        date_value = date.strftime("%B")
+    return date
 
-    return date_value
+# Conver time stamp to a date iso 8601 format
 
-# get year as a lists
-years = [year_maker(x['timestampMs']) for x in data['locations']]
-
-# Maunally set some of them to 2018 for the test set
-years2 = [year if count % 2 else '2018' for count, year in enumerate(years)]
-
-# get months as a list
-months = [year_maker(x['timestampMs'], date_type='Month') for x in data['locations']]
-
-# Manually set some of the months to february for the test set to do filters
-
-months2 = [month if count % 2 else 'February' for count, month in enumerate(months)]
+dates = [ date_maker( x['timestampMs']) for x in data['locations']]
 
 '''Adding duration to each location point ''' 
 
@@ -98,14 +82,12 @@ diff[mask] = newMean # Replace outliers with the mean estimted without outliers
 # 0: dic with long and lat
 # 1: list with duration in sec
 # 2: activity type
-# 3: year
-# 4: month
+# 3: date
 
 zip_object = zip(data['locations'][0:number_of_points], 
         diff[0:number_of_points], 
         activities[0:number_of_points], 
-        years2[0:number_of_points], 
-        months2[0:number_of_points])
+        dates[0:number_of_points])
 
 geojson = {
         "type": "FeatureCollection",
@@ -113,8 +95,7 @@ geojson = {
                 {
                         "type":"Feature","properties":{"durationSec":d[1],
                         "activity": d[2],
-                        "year": d[3],
-                        "month": d[4]}, 
+                        "date": d[3]}, 
                                 "geometry":{"type":"Point",
                                 "coordinates": [d[0]["longitudeE7"] / 1e7, 
                                                 d[0]["latitudeE7"] / 1e7],
@@ -126,20 +107,19 @@ geojson = {
 
 # add a utility that allowes you to dumb the geojson file where you want
 
-print(data['locations'][0]['longitudeE7'] / 1e7)
-
 string = json.dumps(geojson, separators=(',', ':')) # Convert the geojson to a string for export purposes
 
 # Path to where you want to export the file
-export_folder = 'C:/Users/user/Desktop/IT and Cognition/Visualisation/finalProject/DIKIU_Visualization/assignment_5/data'
+#export_folder = 'C:/Users/user/Desktop/IT and Cognition/Visualisation/finalProject/DIKIU_Visualization/assignment_5/data'
+export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/'
 export_path = Path(export_folder)
-export_file_name = 'placeringsoversigt_small.geojson'
+export_file_name = 'placeringsoversigt_large.geojson'
 export_path_name = export_path / export_file_name
 
 #Export the file as geojson to specified location
     
-# with open (export_path_name, 'w') as text_file:
-#     print(string, file=text_file)
+with open (export_path_name, 'w') as text_file:
+    print(string, file=text_file)
 
 
 
