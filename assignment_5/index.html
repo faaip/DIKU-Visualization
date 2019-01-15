@@ -80,7 +80,7 @@
             container: 'map',
             style: 'mapbox://styles/mapbox/basic-v9',
             center: [12.568337, 55.676098],
-            zoom: 11
+            zoom: 12
         });
 
         var heatmap = {
@@ -89,41 +89,15 @@
             source: 'placeringer',
             maxzoom: 15,
             paint: {
-                "heatmap-opacity": 1,
-                'heatmap-radius': {
-                    stops: [
-                        [11, 3],
-                        [15, 5]
-                    ]
-                },
-                'heatmap-intensity': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    0,
-                    1,
-                    9,
-                    3
-                ],
-
+                "heatmap-opacity": 0.7,
+                'heatmap-radius': 7,
+                'heatmap-intensity': 0.05,
                 // assign color values be applied to points depending on their density
                 'heatmap-color': [
                     'interpolate',
                     ['linear'],
                     ['heatmap-density'],
-                    0,
-                    'rgba(33,102,172,0)',
-                    0.2,
-                    'rgb(103,169,207)',
-                    0.4,
-                    'rgb(209,229,240)',
-                    0.6,
-                    'rgb(253,219,199)',
-                    0.8,
-                    'rgb(239,138,98)',
-                    1,
-                    'rgb(178,24,43)'
-                ]
+                    0,"rgba(0, 0, 255, 0)",0.1,"royalblue",0.3,"cyan",0.5,"lime",0.7,"yellow",1,"red"]
             }
         }
 
@@ -147,7 +121,7 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                data: 'data/placeringsoversigt_small.geojson'
+                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_medium.geojson?dl=0'
             });
             map.addLayer(heatmap);
             map.addLayer(points);
