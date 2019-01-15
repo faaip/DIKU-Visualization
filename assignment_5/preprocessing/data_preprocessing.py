@@ -26,8 +26,8 @@ with open(file_to_open, 'r') as read_file:
 
 # Decide how many points should be used (Default all points)
 
-#number_of_points = len(data['locations'])
-number_of_points = 1000
+number_of_points = len(data['locations'])
+#number_of_points = 1000
 
 # Get all activities as a list. If no activity is present give it a NA value
 
@@ -101,7 +101,7 @@ geojson = {
                                                 d[0]["latitudeE7"] / 1e7],
                                 },
                                 
-                                } for d in zip_object] #Number of points is specified earlier
+                                } for i,d in enumerate(zip_object) if i % 5 == 0 ] #keep every 5 point for performance reasons
     }
     
 
@@ -110,32 +110,15 @@ geojson = {
 string = json.dumps(geojson, separators=(',', ':')) # Convert the geojson to a string for export purposes
 
 # Path to where you want to export the file
-export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/DIKIU_Visualization/assignment_5/data'
+export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/'
 # export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/'
 export_path = Path(export_folder)
-export_file_name = 'placeringsoversigt_small.geojson'
+export_file_name = 'placeringsoversigt_medium.geojson'
 export_path_name = export_path / export_file_name
 
 #Export the file as geojson to specified location
     
 with open (export_path_name, 'w') as text_file:
     print(string, file=text_file)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
