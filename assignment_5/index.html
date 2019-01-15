@@ -34,6 +34,7 @@
             $(function () {
             $('input[name="daterange"]').daterangepicker({
                 opens: 'left',
+                startDate: "03/28/2016"
             }, function (start, end, label) {
                 var unixStart = parseInt(new Date(start.format('YYYY-MM-DD')).getTime() / 1000)
                 var unixEnd = parseInt(new Date(end.format('YYYY-MM-DD')).getTime() / 1000)
@@ -84,7 +85,6 @@
         <br>
         ❓ Unknown:
         <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
-
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
