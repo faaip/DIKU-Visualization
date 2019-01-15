@@ -132,24 +132,19 @@
             map.addLayer(points);
 
             // Open controls
-            openRightControls();
             openLeftControls();
-
-
-            map.on('render', stopSpinner);
-
+            map.on('render', loadPieChart); // load after heatmap
         });
 
-        function stopSpinner(e) {
+        function loadPieChart(e) {
             if (e.target && e.target.loaded()) {
-                // loadingSpinner(false);
-                // Intialize piechart
+                openRightControls();
                 var query = map.queryRenderedFeatures({
                     layers: ['place-point']
                 });
                 var data = getCounts(query);
                 createPieChart(data);
-                map.off('render', stopSpinner)
+                map.off('render', loadPieChart)
             }
         }
 
