@@ -52,6 +52,27 @@ def date_maker(time_stamp):
 
 dates = [ date_maker( x['timestampMs']) for x in data['locations']]
 
+# Add year and month as features
+def year_maker(time_stamp, date_type='Year'):
+    '''Function that takes a time_stamp and returns a year or month as string '''
+    if date_type == 'Year':
+        timestampS = round(int(time_stamp) / 1000)
+        date = datetime.fromtimestamp(timestampS)
+        date_value = date.year
+
+    elif date_type == 'Month':
+        timestampS = round(int(time_stamp) / 1000)
+        date = datetime.fromtimestamp(timestampS)
+        date_value = date.strftime("%B")
+
+    return date_value
+
+# get year as a lists
+years = [year_maker(x['timestampMs']) for x in data['locations']]
+
+# get months as a list
+months = [year_maker(x['timestampMs'], date_type='Month') for x in data['locations']]
+
 '''Adding duration to each location point ''' 
 
 # Get all time stamps as a numpy array
@@ -83,11 +104,15 @@ diff[mask] = newMean # Replace outliers with the mean estimted without outliers
 # 1: list with duration in sec
 # 2: activity type
 # 3: date
+# 4: years
+# 5: months
 
 zip_object = zip(data['locations'][0:number_of_points], 
         diff[0:number_of_points], 
         activities[0:number_of_points], 
-        dates[0:number_of_points])
+        dates[0:number_of_points],
+        years[0:number_of_points],
+        months[0:number_of_points])
 
 geojson = {
         "type": "FeatureCollection",
@@ -95,7 +120,9 @@ geojson = {
                 {
                         "type":"Feature","properties":{"durationSec":d[1],
                         "activity": d[2],
-                        "date": d[3]}, 
+                        "date": d[3],
+                        "year": d[4],
+                        "month":d[5]}, 
                                 "geometry":{"type":"Point",
                                 "coordinates": [d[0]["longitudeE7"] / 1e7, 
                                                 d[0]["latitudeE7"] / 1e7],
