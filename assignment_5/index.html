@@ -245,15 +245,11 @@
             boxes.forEach(function (element) {
                 var checkBox = document.getElementById(element[0]);
                 if (checkBox.checked == true) {
-                    // map.setFilter('place-heat', ['==', 'activity', element[1]]);
                     filteredActivities.push(element[1])
-                } else {
-                    // map.setFilter('place-heat', ['!=', 'activity', element[1]]);
-                    // text.style.display = "none";
-                }
+                } 
             });
-            // map.setFilter('place-heat', ['!=', 'activity', filteredActivities);
             map.setFilter('place-heat', buildFilter(filteredActivities))
+            map.setFilter('place-point', buildFilter(filteredActivities))
         }
 
         function buildFilter(arr) {
@@ -267,8 +263,5 @@
             return filter;
         }
     </script>
-
-
 </body>
-
 </html>
