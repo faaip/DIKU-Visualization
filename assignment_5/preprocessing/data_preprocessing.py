@@ -63,7 +63,7 @@ def year_maker(time_stamp, date_type='Year'):
     elif date_type == 'Month':
         timestampS = round(int(time_stamp) / 1000)
         date = datetime.fromtimestamp(timestampS)
-        date_value = date.strftime("%B")
+        date_value = date.month
 
     return date_value
 
@@ -71,7 +71,7 @@ def year_maker(time_stamp, date_type='Year'):
 years = [year_maker(x['timestampMs']) for x in data['locations']]
 
 # get months as a list
-months = [year_maker(x['timestampMs'], date_type='Month') for x in data['locations']]
+months = [year_maker(x['timestampMs'], date_type='Month') if i % 2 == 0 else 2 for i,x in enumerate(data['locations'])  ]
 
 '''Adding duration to each location point ''' 
 
