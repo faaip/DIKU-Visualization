@@ -139,16 +139,20 @@
             map.addLayer(points);
         });
 
-        // map.on('click', function () {
-        //     openRightControls();
-        //     //TESTING
-        //     var query = map.queryRenderedFeatures({
-        //         layers: ['place-point']
-        //     });
-        //     // var data = [10, 20, 100];
-        //     var data = getCounts(query);
-        //     createPieChart(data);
-        // })
+        map.on('click', function () {
+            openRightControls();
+
+            // var layer = map.getSource('placeringer');
+
+
+            //TESTING
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            });
+            // var data = [10, 20, 100];
+            var data = getCounts(query);
+            createPieChart(data);
+        })
 
         // Add drawing stuff for selecting
         var draw = new MapboxDraw({
@@ -214,18 +218,40 @@
 
     <script>
         function checkBoxes() {
-            var boxes = ["vehicleCheck", "onFootCheck"];
+            var boxes = [
+                ["vehicleCheck", "IN_VEHICLE"],
+                ["onFootCheck", "ON_FOOT"]
+            ];
+
+            var filteredActivities = []
 
             boxes.forEach(function (element) {
-                var checkBox = document.getElementById(element);
+                var checkBox = document.getElementById(element[0]);
                 if (checkBox.checked == true) {
-                    // text.style.display = "block";
-                    console.log(element,"checked")
+                    // map.setFilter('place-heat', ['==', 'activity', element[1]]);
+                    filteredActivities.push(element[1])
                 } else {
+                    // map.setFilter('place-heat', ['!=', 'activity', element[1]]);
                     // text.style.display = "none";
                 }
             });
+            // map.setFilter('place-heat', ['!=', 'activity', filteredActivities);
+            console.log(buildFilter(filteredActivities));
+            map.setFilter('place-heat', buildFilter(filteredActivities))
 
+        }
+
+        function buildFilter(arr) {
+            var filter = ['in', 'activity'];
+
+            if (arr.length === 0) {
+                return filter;
+            }
+
+            for (var i = 0; i < arr.length; i += 1) {
+                filter.push(arr[i]);
+            }
+            return filter;
         }
     </script>
 
