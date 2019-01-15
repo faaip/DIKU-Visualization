@@ -125,8 +125,8 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                // data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_medium.geojson?dl=0'
-                data: 'data/placeringsoversigt_small.geojson'
+                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_medium.geojson?dl=0'
+                // data: 'data/placeringsoversigt_small.geojson'
             });
             map.addLayer(heatmap);
             map.addLayer(points);
@@ -135,28 +135,23 @@
             openRightControls();
             openLeftControls();
 
-            // Intialize piechart
-            var query = map.queryRenderedFeatures({
-                layers: ['place-point']
-            });
-            var data = getCounts(query);
-            createPieChart(data);
+
+            map.on('render', stopSpinner);
+
         });
 
-        map.on('click', function () {
-            openRightControls();
-
-            // var layer = map.getSource('placeringer');
-
-
-            //TESTING
-            var query = map.queryRenderedFeatures({
-                layers: ['place-point']
-            });
-            // var data = [10, 20, 100];
-            var data = getCounts(query);
-            createPieChart(data);
-        })
+        function stopSpinner(e) {
+            if (e.target && e.target.loaded()) {
+                // loadingSpinner(false);
+                // Intialize piechart
+                var query = map.queryRenderedFeatures({
+                    layers: ['place-point']
+                });
+                var data = getCounts(query);
+                createPieChart(data);
+                map.off('render', stopSpinner)
+            }
+        }
 
         // Add drawing stuff for selecting
         var draw = new MapboxDraw({
