@@ -78,7 +78,7 @@
             'pk.eyJ1IjoiZGplcm5hZXMiLCJhIjoiY2pxbWRsMzEzMjFjaTQzcXN0MDc0Y2xrZiJ9.-LM9uIeDM1DqFF75g9KKwQ';
         var map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/basic-v9',
+            style: 'mapbox://styles/mapbox/dark-v9',
             center: [12.568337, 55.676098],
             zoom: 12
         });
@@ -87,7 +87,7 @@
             id: 'place-heat',
             type: 'heatmap',
             source: 'placeringer',
-            maxzoom: 15,
+            // maxzoom: 15,
             paint: {
                 "heatmap-opacity": 0.7,
                 'heatmap-radius': 7,
@@ -97,7 +97,9 @@
                     'interpolate',
                     ['linear'],
                     ['heatmap-density'],
-                    0,"rgba(0, 0, 255, 0)",0.1,"royalblue",0.3,"cyan",0.5,"lime",0.7,"yellow",1,"red"]
+                    0, "rgba(0, 0, 255, 0)", 0.1, "royalblue", 0.3, "cyan", 0.5, "lime", 0.7, "yellow", 1,
+                    "red"
+                ]
             }
         }
 
