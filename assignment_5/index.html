@@ -27,7 +27,7 @@
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
         <a>Side Controls</a>
         <!-- Content of side controls -->
-        <p style="color:white;">Custom range slider:</p>
+        <!-- <p style="color:white;">Custom range slider:</p>
         <input type="range" min="1" max="100" value="50" class="slider" id="slider_1">
         <script>
             var slider = document.getElementById("slider_1");
@@ -36,7 +36,7 @@
                 console.log(this.value);
             }
             openLeftControls();
-        </script>
+        </script> -->
         <p style="color:white;">Visible activities:</p>
         In vehicle:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
@@ -44,6 +44,20 @@
         On foot:
         <input style="color:white;" type="checkbox" id="onFootCheck" onclick="checkBoxes()" checked>
         <br>
+        Not available:
+        <input style="color:white;" type="checkbox" id="naCheck" onclick="checkBoxes()" checked>
+        <br>
+        On bike:
+        <input style="color:white;" type="checkbox" id="onBicycleCheck" onclick="checkBoxes()" checked>
+        <br>
+        Still:
+        <input style="color:white;" type="checkbox" id="stillCheck" onclick="checkBoxes()" checked>
+        <br>
+        Tilting:
+        <input style="color:white;" type="checkbox" id="tiltingCheck" onclick="checkBoxes()" checked>
+        <br>
+        Unknown:
+        <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
 
     </div>
     <!-- Side Visualization -->
@@ -191,8 +205,6 @@
                 }
                 return memo;
             }, []);
-            // map.setFilter("place-point", filter);
-            // console.log(filter);
             var data = getCounts(filtered);
             createPieChart(data);
         }
@@ -220,7 +232,12 @@
         function checkBoxes() {
             var boxes = [
                 ["vehicleCheck", "IN_VEHICLE"],
-                ["onFootCheck", "ON_FOOT"]
+                ["onFootCheck", "ON_FOOT"],
+                ["naCheck","NA"],
+                ["onBicycleCheck","ON_BICYCLE"],
+                ["stillCheck","STILL"],
+                ["tiltingCheck","TILTING"],
+                ["unknownCheck","UNKNOWN"],
             ];
 
             var filteredActivities = []
@@ -236,18 +253,14 @@
                 }
             });
             // map.setFilter('place-heat', ['!=', 'activity', filteredActivities);
-            console.log(buildFilter(filteredActivities));
             map.setFilter('place-heat', buildFilter(filteredActivities))
-
         }
 
         function buildFilter(arr) {
             var filter = ['in', 'activity'];
-
             if (arr.length === 0) {
                 return filter;
             }
-
             for (var i = 0; i < arr.length; i += 1) {
                 filter.push(arr[i]);
             }
