@@ -11,6 +11,10 @@
           width: 100%;
       }
 
+      .ui-datepicker-calendar {
+          display: none;
+      }
+
       .sidenav {
           height: 100%;
           width: 0;

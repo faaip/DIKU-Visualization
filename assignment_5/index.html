@@ -9,6 +9,10 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <!-- libraries -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
@@ -24,16 +28,28 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
+        <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
 
-
-
-
-
-
-
-
-
-
+        <script>
+            $(function () {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left',
+            }, function (start, end, label) {
+                var unixStart = parseInt(new Date(start.format('YYYY-MM-DD')).getTime() / 1000)
+                var unixEnd = parseInt(new Date(end.format('YYYY-MM-DD')).getTime() / 1000)
+                var unixStart = ['>=', ['number', ['get', 'timestampS']], unixStart]
+                var unixEnd = ['<=', ['number', ['get', 'timestampS']], unixEnd]
+                map.setFilter('place-heat', ['all', unixStart, unixEnd]);
+                map.setFilter('place-point', ['all', unixStart, unixEnd]);
+                var query = map.queryRenderedFeatures({
+                    layers: ['place-point']
+                });
+                var data = getCounts(query);
+                createPieChart(data);
+                openRightControls();
+        });
+    });
+</script>
         <a>Visible activites:</a>
         🚗 In car:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
@@ -142,11 +158,6 @@
                 var data = getCounts(query);
                 createPieChart(data);
                 map.off('render', loadPieChart)
-                // Filter on date - TEST FIXME:
-                var startYear = ['>=', ['number', ['get', 'year']], 2017]
-                var endYear = ['<=', ['number', ['get', 'year']], 2018]
-                map.setFilter('place-heat', ['all', startYear, endYear]);
-                map.setFilter('place-point', ['all', startYear, endYear]);
             }
         }
 
