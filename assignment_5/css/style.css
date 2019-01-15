@@ -15,6 +15,10 @@
           display: none;
       }
 
+       .mapboxgl-popup {
+           opacity: .7;
+       }
+
       .sidenav {
           height: 100%;
           width: 0;

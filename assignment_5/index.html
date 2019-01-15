@@ -28,6 +28,7 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
+        <a>Date range:</a>
         <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
 
         <script>
@@ -262,6 +263,8 @@
                     filteredActivities.push(element[1])
                 }
             });
+
+            console.log(filteredActivities);
             map.setFilter('place-heat', buildFilter(filteredActivities))
             map.setFilter('place-point', buildFilter(filteredActivities))
 
@@ -286,7 +289,8 @@
 
         var popup = new mapboxgl.Popup({
             closeButton: false,
-            closeOnClick: false
+            closeOnClick: false,
+            opacity: .5
         });
 
         function getActivityString(activity) {
@@ -308,7 +312,7 @@
 
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.date + "<br>" + getActivityString(e.features[0].properties
-                .activity);
+                .activity) + "<br>" + "Duration: " + parseInt(e.features[0].properties.durationSec) + " s";
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
