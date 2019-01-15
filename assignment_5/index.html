@@ -38,7 +38,7 @@
         </script> -->
         <!-- <p style="color:white;">Visible activities:</p> -->
         <a>Visible activites:</a>
-        🚗 In vehicle:
+        🚗 In car:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
         <br>
         🦶 On foot:
@@ -139,7 +139,6 @@
             var query = map.queryRenderedFeatures({
                 layers: ['place-point']
             });
-            // var data = [10, 20, 100];
             var data = getCounts(query);
             createPieChart(data);
         });
@@ -241,6 +240,13 @@
             });
             map.setFilter('place-heat', buildFilter(filteredActivities))
             map.setFilter('place-point', buildFilter(filteredActivities))
+
+            // new pie chart
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            });
+            var data = getCounts(query);
+            createPieChart(data);
         }
 
         function buildFilter(arr) {
