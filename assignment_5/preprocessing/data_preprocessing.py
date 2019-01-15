@@ -110,10 +110,10 @@ geojson = {
 string = json.dumps(geojson, separators=(',', ':')) # Convert the geojson to a string for export purposes
 
 # Path to where you want to export the file
-#export_folder = 'C:/Users/user/Desktop/IT and Cognition/Visualisation/finalProject/DIKIU_Visualization/assignment_5/data'
-export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/'
+export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/DIKIU_Visualization/assignment_5/data'
+# export_folder = 'C:/Users/gusta/Desktop/IT_and_cognition/Visualization/Final project/'
 export_path = Path(export_folder)
-export_file_name = 'placeringsoversigt_large.geojson'
+export_file_name = 'placeringsoversigt_small.geojson'
 export_path_name = export_path / export_file_name
 
 #Export the file as geojson to specified location
