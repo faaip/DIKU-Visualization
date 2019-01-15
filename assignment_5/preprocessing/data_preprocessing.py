@@ -26,8 +26,8 @@ with open(file_to_open, 'r') as read_file:
 
 # Decide how many points should be used (Default all points)
 
-number_of_points = len(data['locations'])
-#number_of_points = 1000
+#number_of_points = len(data['locations'])
+number_of_points = 1000
 
 # Get all activities as a list. If no activity is present give it a NA value
 
