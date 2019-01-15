@@ -25,9 +25,8 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
-        <a>Side Controls</a>
         <!-- Content of side controls -->
-        <p style="color:white;">Custom range slider:</p>
+        <!-- <p style="color:white;">Custom range slider:</p>
         <input type="range" min="1" max="100" value="50" class="slider" id="slider_1">
         <script>
             var slider = document.getElementById("slider_1");
@@ -35,7 +34,31 @@
                 slider.innerHTML = this.value;
                 console.log(this.value);
             }
-        </script>
+            openLeftControls();
+        </script> -->
+        <!-- <p style="color:white;">Visible activities:</p> -->
+        <a>Visible activites:</a>
+        🚗 In vehicle:
+        <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
+        <br>
+        🦶 On foot:
+        <input style="color:white;" type="checkbox" id="onFootCheck" onclick="checkBoxes()" checked>
+        <br>
+        🚫 Not available:
+        <input style="color:white;" type="checkbox" id="naCheck" onclick="checkBoxes()" checked>
+        <br>
+        🚴 On bike:
+        <input style="color:white;" type="checkbox" id="onBicycleCheck" onclick="checkBoxes()" checked>
+        <br>
+        😑 Still:
+        <input style="color:white;" type="checkbox" id="stillCheck" onclick="checkBoxes()" checked>
+        <br>
+        🤣 Tilting:
+        <input style="color:white;" type="checkbox" id="tiltingCheck" onclick="checkBoxes()" checked>
+        <br>
+        ❓ Unknown:
+        <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
+
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
@@ -130,16 +153,20 @@
             map.addLayer(points);
         });
 
-        // map.on('click', function () {
-        //     openRightControls();
-        //     //TESTING
-        //     var query = map.queryRenderedFeatures({
-        //         layers: ['place-point']
-        //     });
-        //     // var data = [10, 20, 100];
-        //     var data = getCounts(query);
-        //     createPieChart(data);
-        // })
+        map.on('click', function () {
+            openRightControls();
+
+            // var layer = map.getSource('placeringer');
+
+
+            //TESTING
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            });
+            // var data = [10, 20, 100];
+            var data = getCounts(query);
+            createPieChart(data);
+        })
 
         // Add drawing stuff for selecting
         var draw = new MapboxDraw({
@@ -155,7 +182,6 @@
         map.on('draw.update', updateArea);
 
         function updateArea(e) {
-            console.log(e);
             var query = map.queryRenderedFeatures({
                 layers: ['place-point']
             })
@@ -179,8 +205,6 @@
                 }
                 return memo;
             }, []);
-            // map.setFilter("place-point", filter);
-            // console.log(filter);
             var data = getCounts(filtered);
             createPieChart(data);
         }
@@ -201,6 +225,42 @@
                 })
             }
             return object;
+        }
+    </script>
+
+    <script>
+        function checkBoxes() {
+            var boxes = [
+                ["vehicleCheck", "IN_VEHICLE"],
+                ["onFootCheck", "ON_FOOT"],
+                ["naCheck", "NA"],
+                ["onBicycleCheck", "ON_BICYCLE"],
+                ["stillCheck", "STILL"],
+                ["tiltingCheck", "TILTING"],
+                ["unknownCheck", "UNKNOWN"],
+            ];
+
+            var filteredActivities = []
+
+            boxes.forEach(function (element) {
+                var checkBox = document.getElementById(element[0]);
+                if (checkBox.checked == true) {
+                    filteredActivities.push(element[1])
+                }
+            });
+            map.setFilter('place-heat', buildFilter(filteredActivities))
+            map.setFilter('place-point', buildFilter(filteredActivities))
+        }
+
+        function buildFilter(arr) {
+            var filter = ['in', 'activity'];
+            if (arr.length === 0) {
+                return filter;
+            }
+            for (var i = 0; i < arr.length; i += 1) {
+                filter.push(arr[i]);
+            }
+            return filter;
         }
     </script>
 </body>
