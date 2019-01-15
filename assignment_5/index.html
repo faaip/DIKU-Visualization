@@ -18,7 +18,6 @@
         <!-- separate files -->
     <script src="js/side_controls.js"></script>
     <script src="js/piechart.js"></script>
-
 </head>
 
 <body>
@@ -133,7 +132,7 @@
 
             // Open controls
             openLeftControls();
-            map.on('render', loadPieChart); // load after heatmap
+            map.on('render', loadPieChart);
         });
 
         function loadPieChart(e) {
