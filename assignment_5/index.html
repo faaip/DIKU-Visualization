@@ -5,10 +5,20 @@
     <meta charset="utf-8" />
     <title>Visualization - Final Group Project</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
-    <script src="js/side_controls.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
+    type='text/css' />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- libraries -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet" />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+        <!-- separate files -->
+    <script src="js/side_controls.js"></script>
+    <script src="js/piechart.js"></script>
+
 </head>
 
 <body>
@@ -29,14 +39,15 @@
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeRightControls()">&times;</a>
+        <a style="left:0" href="javascript:void(0)" class="closebtn" onclick="closeRightControls()">&times;</a>
         <a>Side Controls</a>
         <!-- Content of side controls -->
-        <p style="color:white;">RIGHT:</p>
+        <div id="piechart"></div>
+
     </div>
     <div id="main">
-        <span style="font-size:30px;cursor:pointer;" onclick="openLeftControls()" id="leftSideButton">&#9776;</span>
-        <span style="font-size:30px;cursor:pointer;position:fixed;right:6px" onclick="openRightControls()">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer;position:fixed;top:50%" onclick="openLeftControls()" id="leftSideButton">&#9776;</span>
+        <span style="font-size:30px;cursor:pointer;position:fixed;right:6px;top:50%" onclick="openRightControls()" id="rightSideButton">&#9776;</span>
     </div>
     <div id="map"></div>
     <script>
@@ -49,54 +60,148 @@
             zoom: 11
         });
 
+        var heatmap = {
+            id: 'place-heat',
+            type: 'heatmap',
+            source: 'placeringer',
+            maxzoom: 15,
+            paint: {
+                "heatmap-opacity": 1,
+                'heatmap-radius': {
+                    stops: [
+                        [11, 3],
+                        [15, 5]
+                    ]
+                },
+                'heatmap-intensity': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    1,
+                    9,
+                    3
+                ],
+
+                // assign color values be applied to points depending on their density
+                'heatmap-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['heatmap-density'],
+                    0,
+                    'rgba(33,102,172,0)',
+                    0.2,
+                    'rgb(103,169,207)',
+                    0.4,
+                    'rgb(209,229,240)',
+                    0.6,
+                    'rgb(253,219,199)',
+                    0.8,
+                    'rgb(239,138,98)',
+                    1,
+                    'rgb(178,24,43)'
+                ]
+            }
+        }
+
+        var points = {
+            id: 'place-point',
+            type: 'circle',
+            source: 'placeringer',
+            maxzoom: 15,
+            'paint': {
+                'circle-opacity': 0,
+                'circle-radius': {
+                    'base': 1.75,
+                    'stops': [
+                        [12, 2],
+                        [22, 180]
+                    ]
+                }
+            }
+        }
+
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                data: './placeringsoversigt.geojson'
+                data: 'data/placeringsoversigt_small.geojson'
             });
-            map.addLayer({
-                id: 'place-heat',
-                type: 'heatmap',
-                source: 'placeringer',
-                maxzoom: 15,
-                paint: {
-                    'heatmap-radius': {
-                        stops: [
-                            [11, 3],
-                            [15, 5]
-                        ]
-                    },
-                    'heatmap-intensity': [
-                        'interpolate',
-                        ['linear'],
-                        ['zoom'],
-                        0,
-                        1,
-                        9,
-                        3
-                    ],
-
-                    // assign color values be applied to points depending on their density
-                    'heatmap-color': [
-                        'interpolate',
-                        ['linear'],
-                        ['heatmap-density'],
-                        0,
-                        'rgba(33,102,172,0)',
-                        0.2,
-                        'rgb(103,169,207)',
-                        0.4,
-                        'rgb(209,229,240)',
-                        0.6,
-                        'rgb(253,219,199)',
-                        0.8,
-                        'rgb(239,138,98)',
-                        1,
-                        'rgb(178,24,43)'
-                    ]
-                }
-            });
+            map.addLayer(heatmap);
+            map.addLayer(points);
         });
+
+        // map.on('click', function () {
+        //     openRightControls();
+        //     //TESTING
+        //     var query = map.queryRenderedFeatures({
+        //         layers: ['place-point']
+        //     });
+        //     // var data = [10, 20, 100];
+        //     var data = getCounts(query);
+        //     createPieChart(data);
+        // })
+
+        // Add drawing stuff for selecting
+        var draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+                polygon: true,
+                trash: true
+            }
+        });
+        map.addControl(draw);
+        map.on('draw.create', updateArea);
+        map.on('draw.delete', updateArea);
+        map.on('draw.update', updateArea);
+
+        function updateArea(e) {
+            console.log(e);
+            var query = map.queryRenderedFeatures({
+                layers: ['place-point']
+            })
+
+            var userPolygon = e.features[0];
+            // generate bounding box from polygon the user drew
+            var polygonBoundingBox = turf.bbox(userPolygon);
+
+            var southWest = [polygonBoundingBox[0], polygonBoundingBox[1]];
+            var northEast = [polygonBoundingBox[2], polygonBoundingBox[3]];
+            var northEastPointPixel = map.project(northEast);
+            var southWestPointPixel = map.project(southWest);
+            var features = map.queryRenderedFeatures([southWestPointPixel, northEastPointPixel], {
+                layers: ['place-point']
+            });
+            var filtered = features.reduce(function (memo, feature) {
+                if (!(undefined === turf.intersect(feature, userPolygon))) {
+                    // only add the property, if the feature intersects with the polygon drawn by the user
+                    // memo.push(feature.properties.FIPS);
+                    memo.push(feature);
+                }
+                return memo;
+            }, []);
+            // map.setFilter("place-point", filter);
+            // console.log(filter);
+            var data = getCounts(filtered);
+            createPieChart(data);
+        }
+
+        function getCounts(data) {
+            var counts = {};
+            for (var i = 0; i < data.length; i++) {
+                var activity = data[i].properties.activity;
+                var val = 1 + (counts[activity] || 0);
+                counts[activity] = val;
+            }
+
+            var object = []
+            for (var property in counts) {
+                object.push({
+                    name: property,
+                    value: counts[property]
+                })
+            }
+            return object;
+        }
     </script>
 </body>
 

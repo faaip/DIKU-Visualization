@@ -4,6 +4,13 @@
           font-family: 'Helvetica Neue', helvetica, Arial, Sans-serif;
       }
 
+      #map {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+      }
+
       .sidenav {
           height: 100%;
           width: 0;
@@ -46,6 +53,7 @@
           .sidenav {
               padding-top: 15px;
           }
+
           .sidenav a {
               font-size: 18px;
           }
@@ -121,4 +129,31 @@
           height: 25px;
           background: #4CAF50;
           cursor: pointer;
+      }
+
+      .pie {
+          margin: 20px;
+      }
+
+      svg {
+          float: left;
+      }
+
+      .legend {
+          float: left;
+          font-family: "Verdana";
+          font-size: .7em;
+      }
+
+      .pie text {
+          font-family: "Verdana";
+          fill: #000;
+      }
+
+      .pie .name-text {
+          font-size: .8em;
+      }
+
+      .pie .value-text {
+          font-size: 3em;
       }
