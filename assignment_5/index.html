@@ -24,18 +24,35 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
-        <!-- Content of side controls -->
-        <!-- <p style="color:white;">Custom range slider:</p>
-        <input type="range" min="1" max="100" value="50" class="slider" id="slider_1">
+
+        <div id="slider-range"></div>
+
         <script>
-            var slider = document.getElementById("slider_1");
-            slider.oninput = function () {
-                slider.innerHTML = this.value;
-                console.log(this.value);
+            $(function () {
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 500,
+            values: [75, 300],
+            slide: function (event, ui) {
+                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
             }
-            openLeftControls();
-        </script> -->
-        <!-- <p style="color:white;">Visible activities:</p> -->
+        });
+        $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+            " - $" + $("#slider-range").slider("values", 1));
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
         <a>Visible activites:</a>
         🚗 In car:
         <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
