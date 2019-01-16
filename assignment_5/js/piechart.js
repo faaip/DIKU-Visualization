@@ -150,3 +150,7 @@ function createPieChart(query) {
 
     keys.exit().remove();
 }
+
+function pieLoader() {
+    document.getElementById("piechart").innerHTML = "Updating chart!";
+}
