@@ -11,6 +11,7 @@ function createPieChart(query) {
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     document.getElementById("piechart").innerHTML = "";
+    document.getElementById("pieSpinner").outerHTML = "";
     var data = getCounts(query);
 
     // if (data.length < 1) {
@@ -152,5 +153,9 @@ function createPieChart(query) {
 }
 
 function pieLoader() {
-    document.getElementById("piechart").innerHTML = "Updating chart!";
+    document.getElementById("piechart").innerHTML = "";
+    var element = document.createElement('div');
+    element.className = 'loader';
+    element.id = 'pieSpinner';
+    document.getElementById('rightControls').appendChild(element);
 }

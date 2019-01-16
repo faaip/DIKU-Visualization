@@ -15,9 +15,9 @@
           display: none;
       }
 
-       .mapboxgl-popup {
-           opacity: .7;
-       }
+      .mapboxgl-popup {
+          opacity: .7;
+      }
 
       .sidenav {
           height: 100%;
@@ -166,4 +166,27 @@
 
       .pie .value-text {
           font-size: 3em;
+      }
+
+      .loader {
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #3498db;
+          width: 120px;
+          height: 120px;
+          -webkit-animation: spin 2s linear infinite;
+          /* Safari */
+          animation: spin 2s linear infinite;
+          position: absolute;
+          left: 20%;
+      }
+
+      @keyframes spin {
+          0% {
+              transform: rotate(0deg);
+          }
+
+          100% {
+              transform: rotate(360deg);
+          }
       }
