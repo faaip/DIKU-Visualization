@@ -146,7 +146,7 @@ export_path_name = export_path / export_file_name
 
 #Export the file as geojson to specified location
     
-with open (export_path_name, 'w') as text_file:
-    print(string, file=text_file)
+# with open (export_path_name, 'w') as text_file:
+#     print(string, file=text_file)
 
 
