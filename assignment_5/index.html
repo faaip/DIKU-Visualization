@@ -28,6 +28,7 @@
     <!-- Side controls -->
     <div id="leftControls" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeLeftControls()">&times;</a>
+        <a>Date range:</a>
         <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
 
         <script>
@@ -42,12 +43,8 @@
                 var unixEnd = ['<=', ['number', ['get', 'timestampS']], unixEnd]
                 map.setFilter('place-heat', ['all', unixStart, unixEnd]);
                 map.setFilter('place-point', ['all', unixStart, unixEnd]);
-                var query = map.queryRenderedFeatures({
-                    layers: ['place-point']
-                });
-                var data = getCounts(query);
-                createPieChart(data);
-                openRightControls();
+                pieLoader();
+                map.on('render', loadPieChart);
         });
 
         $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -55,36 +52,35 @@
                 var unixEnd = ['<=', ['number', ['get', 'timestampS' ]], 2147483647]
                 map.setFilter('place-heat', ['all', unixStart, unixEnd]);
                 map.setFilter('place-point', ['all', unixStart, unixEnd]);
-                var query = map.queryRenderedFeatures({
-                    layers: ['place-point']
-                });
-                var data = getCounts(query);
-                createPieChart(data);
-                openRightControls();
+                pieLoader();
+                map.on('render', loadPieChart);
         });
     });
 </script>
         <a>Visible activites:</a>
         🚗 In car:
-        <input style="color:white;" type="checkbox" id="vehicleCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="IN_VEHICLE" onclick="checkBoxes()" checked>
         <br>
         🦶 On foot:
-        <input style="color:white;" type="checkbox" id="onFootCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="ON_FOOT" onclick="checkBoxes()" checked>
         <br>
         🚫 Not available:
-        <input style="color:white;" type="checkbox" id="naCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="NA" onclick="checkBoxes()" checked>
         <br>
         🚴 On bike:
-        <input style="color:white;" type="checkbox" id="onBicycleCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="ON_BICYCLE" onclick="checkBoxes()" checked>
         <br>
         😑 Still:
-        <input style="color:white;" type="checkbox" id="stillCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="STILL" onclick="checkBoxes()" checked>
         <br>
         🤣 Tilting:
-        <input style="color:white;" type="checkbox" id="tiltingCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="TILTING" onclick="checkBoxes()" checked>
         <br>
         ❓ Unknown:
-        <input style="color:white;" type="checkbox" id="unknownCheck" onclick="checkBoxes()" checked>
+        <input style="color:white;" type="checkbox" id="UNKNOWN" onclick="checkBoxes()" checked>
+        <br>
+        ❓ Exiting Vehicle:
+        <input style="color:white;" type="checkbox" id="EXITING_VEHICLE" onclick="checkBoxes()" checked>
     </div>
     <!-- Side Visualization -->
     <div id="rightControls" class="sidenav sidenavRight">
@@ -92,7 +88,6 @@
         <a>Side Controls</a>
         <!-- Content of side controls -->
         <div id="piechart"></div>
-
     </div>
     <div id="main">
         <span style="font-size:30px;cursor:pointer;position:fixed;top:50%;color:lightgray" onclick="openLeftControls()"
@@ -163,12 +158,10 @@
 
             // Open controls
             openLeftControls();
+            openLeftControls();
+            pieLoader();
             map.on('render', loadPieChart);
         });
-
-        function updateHeatMap() {
-
-        }
 
         function loadPieChart(e) {
             if (e.target && e.target.loaded()) {
@@ -176,13 +169,11 @@
                 var query = map.queryRenderedFeatures({
                     layers: ['place-point']
                 });
-                var data = getCounts(query);
-                createPieChart(data);
+                createPieChart(query);
                 map.off('render', loadPieChart)
             }
         }
 
-        // Add drawing stuff for selecting
         var draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
@@ -196,14 +187,13 @@
         map.on('draw.update', updateArea);
 
         function updateArea(e) {
+            pieLoader();
             var query = map.queryRenderedFeatures({
                 layers: ['place-point']
             })
 
             var userPolygon = e.features[0];
-            // generate bounding box from polygon the user drew
             var polygonBoundingBox = turf.bbox(userPolygon);
-
             var southWest = [polygonBoundingBox[0], polygonBoundingBox[1]];
             var northEast = [polygonBoundingBox[2], polygonBoundingBox[3]];
             var northEastPointPixel = map.project(northEast);
@@ -219,9 +209,10 @@
                 }
                 return memo;
             }, []);
-            var data = getCounts(filtered);
-            createPieChart(data);
+            pieLoader();
+            createPieChart(filtered);
         }
+
 
         function getCounts(data) {
             var counts = {};
@@ -252,25 +243,22 @@
                 ["stillCheck", "STILL"],
                 ["tiltingCheck", "TILTING"],
                 ["unknownCheck", "UNKNOWN"],
+                ["exitingVehicleCheck", "EXITING_VEHICLE"],
             ];
 
             var filteredActivities = []
 
             boxes.forEach(function (element) {
-                var checkBox = document.getElementById(element[0]);
+                var checkBox = document.getElementById(element[1]);
                 if (checkBox.checked == true) {
                     filteredActivities.push(element[1])
                 }
             });
+
             map.setFilter('place-heat', buildFilter(filteredActivities))
             map.setFilter('place-point', buildFilter(filteredActivities))
-
-            // new pie chart
-            var query = map.queryRenderedFeatures({
-                layers: ['place-point']
-            });
-            var data = getCounts(query);
-            createPieChart(data);
+            pieLoader();
+            map.on('render', loadPieChart);
         }
 
         function buildFilter(arr) {
@@ -286,7 +274,8 @@
 
         var popup = new mapboxgl.Popup({
             closeButton: false,
-            closeOnClick: false
+            closeOnClick: false,
+            opacity: .5
         });
 
         function getActivityString(activity) {
@@ -297,7 +286,8 @@
                 'ON_BICYCLE': 'On bike 🚴',
                 'STILL': 'Still 😑',
                 'TILTING': 'Tilting 🤣',
-                'UNKNOWN': 'Unknown ❓'
+                'UNKNOWN': 'Unknown ❓',
+                'EXITING_VEHICLE': 'Exiting Vehicle ❓'
             }
             return activities[activity];
         }
@@ -308,7 +298,7 @@
 
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.date + "<br>" + getActivityString(e.features[0].properties
-                .activity);
+                .activity) + "<br>" + "Duration: " + parseInt(e.features[0].properties.durationSec) + " s";
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;

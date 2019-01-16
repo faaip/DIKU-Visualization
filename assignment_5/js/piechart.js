@@ -1,9 +1,6 @@
-function createPieChart(data) {
-    var text = "";
+function createPieChart(query) {
     var width = 200;
     var height = 200;
-    var thickness = 40;
-    var duration = 750;
     var padding = 10;
     var opacity = .8;
     var opacityHover = 1;
@@ -14,17 +11,25 @@ function createPieChart(data) {
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     document.getElementById("piechart").innerHTML = "";
+    document.getElementById("pieSpinner").outerHTML = "";
+    var data = getCounts(query);
 
-    if (data.length == 0) {
-        document.getElementById("piechart").innerHTML = "No data loaded :(";
-        return;
-    }
+    // if (data.length < 1) {
+    //     document.getElementById("piechart").innerHTML = "No data loaded :(";
+    //     return;
+    // }
 
     var total = 0;
 
-    data.forEach(element => {
-        total += element.value;
+    data = $.map(data, function (item, index) {
+        var checkBox = document.getElementById(item.name);
+        if (checkBox.checked == false) {
+            return null;
+        }
+        return item;
     });
+
+    console.log(data);
 
     var svg = d3.select("#piechart")
         .append('svg')
@@ -145,4 +150,12 @@ function createPieChart(data) {
         .text(d => `${getActivityString(d.name)} (${d.value})`);
 
     keys.exit().remove();
+}
+
+function pieLoader() {
+    document.getElementById("piechart").innerHTML = "";
+    var element = document.createElement('div');
+    element.className = 'loader';
+    element.id = 'pieSpinner';
+    document.getElementById('rightControls').appendChild(element);
 }
