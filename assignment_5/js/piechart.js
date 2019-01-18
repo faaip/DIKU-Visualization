@@ -10,8 +10,9 @@ function createPieChart(query) {
     var radius = Math.min(width - padding, height - padding) / 2;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+    // document.getElementById("pieSpinner").outerHTML = "";
+    $(".loader").remove();
     document.getElementById("piechart").innerHTML = "";
-    document.getElementById("pieSpinner").outerHTML = "";
     var data = getCounts(query);
 
     var totalCount = 0;
@@ -28,6 +29,8 @@ function createPieChart(query) {
         }
         return item;
     });
+
+    console.log(data)
 
     var svg = d3.select("#piechart")
         .append('svg')
