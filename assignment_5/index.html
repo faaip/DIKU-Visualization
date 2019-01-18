@@ -150,8 +150,8 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_small.geojson?dl=0'
-                // data: 'data/placeringsoversigt_small.geojson'
+                // data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_small.geojson?dl=0'
+                data: 'data/placeringsoversigt_small.geojson'
             });
             map.addLayer(heatmap);
             map.addLayer(points);
@@ -218,18 +218,20 @@
             var counts = {};
             for (var i = 0; i < data.length; i++) {
                 var activity = data[i].properties.activity;
-                var val = 1 + (counts[activity] || 0);
-                counts[activity] = val;
+                if (activity in counts) {
+                    counts[activity] = {
+                        count: counts[activity].count + 1,
+                        durationHour: counts[activity].durationHour + (data[i].properties.durationSec / 3600)
+                    }
+                } else {
+                    counts[activity] = {
+                        count: 0,
+                        durationHour: 0
+                    }
+                }
             }
-
-            var object = []
-            for (var property in counts) {
-                object.push({
-                    name: property,
-                    value: counts[property]
-                })
-            }
-            return object;
+            console.log(counts);
+            return counts;
         }
     </script>
 

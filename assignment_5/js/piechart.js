@@ -14,22 +14,20 @@ function createPieChart(query) {
     document.getElementById("pieSpinner").outerHTML = "";
     var data = getCounts(query);
 
-    // if (data.length < 1) {
-    //     document.getElementById("piechart").innerHTML = "No data loaded :(";
-    //     return;
-    // }
+    var totalCount = 0;
+    var totalDuration = 0;
 
-    var total = 0;
-
-    data = $.map(data, function (item, index) {
-        var checkBox = document.getElementById(item.name);
+    data = $.map(data, function (item, key) {
+        var checkBox = document.getElementById(key);
         if (checkBox.checked == false) {
             return null;
+        } else {
+            totalCount += item.count;
+            totalDuration += item.durationHour;
+            item.name = key;
         }
         return item;
     });
-
-    console.log(data);
 
     var svg = d3.select("#piechart")
         .append('svg')
@@ -47,7 +45,7 @@ function createPieChart(query) {
 
     var pie = d3.pie()
         .value(function (d) {
-            return d.value;
+            return d.durationHour;
         })
         .sort(null);
 
@@ -74,7 +72,7 @@ function createPieChart(query) {
 
             g.append("text")
                 .attr("class", "name-text")
-                .text(`${getActivityString(d.data.name)} ${(d.data.value/total*100).toFixed(2)} %`)
+                .text(`${getActivityString(d.data.name)} ${(d.data.durationHour/totalDuration*100).toFixed(2)} %`)
                 .attr('text-anchor', 'middle');
 
             let text = g.select("text");
@@ -147,7 +145,12 @@ function createPieChart(query) {
 
     keys.append('div')
         .attr('class', 'name')
-        .text(d => `${getActivityString(d.name)} (${d.value})`);
+        .text(d => `${getActivityString(d.name)} ${d.durationHour.toFixed(1)}  hours`);
+
+    legend.append('div')
+        .attr('class', 'name')
+        .style('margin', '5px 5px')
+        .text("Total duration: " + parseInt(totalDuration) + " hours");
 
     keys.exit().remove();
 }
