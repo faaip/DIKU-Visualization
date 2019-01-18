@@ -150,8 +150,8 @@
         map.on('load', function () {
             map.addSource('placeringer', {
                 type: 'geojson',
-                // data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_small.geojson?dl=0'
-                data: 'data/placeringsoversigt_small.geojson'
+                data: 'https://dl.dropbox.com/s/r5qlo2zgbyctxvp/placeringsoversigt_small.geojson?dl=0'
+                // data: 'data/placeringsoversigt_small.geojson'
             });
             map.addLayer(heatmap);
             map.addLayer(points);
@@ -230,7 +230,6 @@
                     }
                 }
             }
-            console.log(counts);
             return counts;
         }
     </script>
